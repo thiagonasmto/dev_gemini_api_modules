@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -26,22 +27,40 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	model := "gemini-2.5-flash"
 	prompt := "Explain how AI works in a few words"
 	content := genai.Text(prompt)
 
 	budget := int32(-1) // Define o valor para a configuração do Pensamento do Gemini (0) Desabilita, (0 a 24576 para o modelo flash) Habilita e (-1) Dinâmico.
+	config := &genai.GenerateContentConfig{
+		// ResponseMIMEType: "application/json",
+		// ResponseSchema: &genai.Schema{
+		// 	Type: genai.TypeArray,
+		// 	Items: &genai.Schema{
+		// 		Type: genai.TypeObject,
+		// 		Properties: map[string]*genai.Schema{
+		// 			"recipeName": {Type: genai.TypeString},
+		// 			"ingredients": {
+		// 				Type:  genai.TypeArray,
+		// 				Items: &genai.Schema{Type: genai.TypeString},
+		// 			},
+		// 		},
+		// 		PropertyOrdering: []string{"recipeName", "ingredients"},
+		// 	},
+		// },
+		ThinkingConfig: &genai.ThinkingConfig{
+			ThinkingBudget:  &budget, // Habilita, Desabilita ou define como Dinâmico o Pensamento do Gemini
+			IncludeThoughts: false,   // Habilita ou Desabilita o Resumo de Ideias. Resumo de Ideias é a formulação da resposta da LLM.
+		},
+	}
+
 	response, err := client.Models.GenerateContent(
 		ctx,
 		model,
 		content,
 		// nil,
-		&genai.GenerateContentConfig{
-			ThinkingConfig: &genai.ThinkingConfig{
-				ThinkingBudget:  &budget, // Habilita, Desabilita ou define como Dinâmico o Pensamento do Gemini
-				IncludeThoughts: false,   // Habilita ou Desabilita o Resumo de Ideias. Resumo de Ideias é a formulação da resposta da LLM.
-			},
-		},
+		config,
 	)
 
 	if err != nil {
@@ -94,5 +113,9 @@ func main() {
 	// 	}
 	// }
 
-	fmt.Println(response)
+	// fmt.Print(response.SDKHTTPResponse)
+	// fmt.Print(response.UsageMetadata)
+	jsonData, _ := json.MarshalIndent(response, "", "  ")
+	fmt.Println(string(jsonData))
+	// fmt.Print(response.Text())
 }
