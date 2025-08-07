@@ -1,5 +1,23 @@
 ### Resposta da requisição à API Gemini
+
+> Slice de bytes (ASCII) — representação binária do JSON
 ```
+usageMetadata, err := json.MarshalIndent(response, "", "  ")
+if err != nil {
+	log.Fatal(err)
+}
+
+fmt.Println(usageMetadata)
+
+Output:
+[123 10 ... 32 32 ... 125]
+```
+
+> Conteúdo da resposta do modelo Gemini (completions, headers, tokens, etc.)
+```
+fmt.Println(string(usageMetadata))
+
+Output:
 {
   "sdkHttpResponse": {
     "headers": {
@@ -61,6 +79,14 @@
     "totalTokenCount": 808
   }
 }
+```
+
+> Struct Go nativa (UsageMetadata) — usada para análise programática
+```
+fmt.Println(response.UsageMetadata)
+
+Output:
+&{[] 0 11 [] 9 [0xc0003f9b18] 747 0 [] 767 }
 ```
 
 ### Preços
