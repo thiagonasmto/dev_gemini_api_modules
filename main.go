@@ -9,18 +9,9 @@ import (
 )
 
 func main() {
-	ctx, client, model, _ := config.ConfigGemini()
+	ctx, client, model, config, debugResponse, _ := config.ConfigGemini()
 	prompt := "Explain how AI works in few words"
 	content := genai.Text(prompt)
-	debugResponse := true
-
-	budget := int32(-1) // Define o valor para a configuração do Pensamento do Gemini (0) Desabilita, (0 a 24576 para o modelo flash) Habilita e (-1) Dinâmico.
-	config := &genai.GenerateContentConfig{
-		ThinkingConfig: &genai.ThinkingConfig{
-			ThinkingBudget:  &budget,       // Habilita, Desabilita ou define como Dinâmico o Pensamento do Gemini
-			IncludeThoughts: debugResponse, // Habilita ou Desabilita o Resumo de Ideias. Resumo de Ideias é a formulação da resposta da LLM.
-		},
-	}
 
 	println("=================== no streaming response ==================")
 	// response sem streaming

@@ -9,7 +9,7 @@ import (
 	"google.golang.org/genai"
 )
 
-func ConfigGemini() (ctx context.Context, client *genai.Client, model string, erro error) {
+func ConfigGemini() (ctx context.Context, client *genai.Client, model string, config *genai.GenerateContentConfig, debugResponse bool, erro error) {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Erro ao carregar o arquivo .env")
@@ -27,6 +27,15 @@ func ConfigGemini() (ctx context.Context, client *genai.Client, model string, er
 	}
 
 	model = "gemini-2.5-flash"
+	debugResponse = false
 
-	return ctx, client, model, nil
+	budget := int32(-1) // Define o valor para a configuração do Pensamento do Gemini (0) Desabilita, (0 a 24576 para o modelo flash) Habilita e (-1) Dinâmico.
+	config = &genai.GenerateContentConfig{
+		ThinkingConfig: &genai.ThinkingConfig{
+			ThinkingBudget:  &budget,       // Habilita, Desabilita ou define como Dinâmico o Pensamento do Gemini
+			IncludeThoughts: debugResponse, // Habilita ou Desabilita o Resumo de Ideias. Resumo de Ideias é a formulação da resposta da LLM.
+		},
+	}
+
+	return ctx, client, model, config, debugResponse, nil
 }
