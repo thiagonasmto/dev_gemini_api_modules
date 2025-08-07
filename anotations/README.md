@@ -91,3 +91,6 @@ Output:
 
 ### Preços
 > O preço da resposta é a soma dos tokens de saída e de pensamento. É possível conferir o número total de tokens de pensamento gerados no campo `thoughtsTokenCount`.
+
+### API file
+> A API File permite armazenar até 50 MB de arquivos PDF. Os arquivos são armazenados por 48 horas. Você pode acessar os dados nesse período com sua chave de API, mas não é possível fazer o download deles pela API. A API File está disponível sem custo financeiro em todas as regiões onde a API Gemini está disponível.

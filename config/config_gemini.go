@@ -21,7 +21,10 @@ func ConfigGemini() (ctx context.Context, client *genai.Client, model string, co
 	}
 
 	ctx = context.Background()
-	client, err = genai.NewClient(ctx, &genai.ClientConfig{APIKey: apiKey})
+	client, err = genai.NewClient(ctx, &genai.ClientConfig{
+		APIKey:  apiKey,
+		Backend: genai.BackendGeminiAPI,
+	})
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -9,11 +9,11 @@ import (
 	"google.golang.org/genai"
 )
 
-func SimpleRequest(client *genai.Client, ctx context.Context, model string, prompt string, content []*genai.Content, config *genai.GenerateContentConfig) (*genai.GenerateContentResponse, error) {
+func SimpleRequest(client *genai.Client, ctx context.Context, model string, contents []*genai.Content, config *genai.GenerateContentConfig) (*genai.GenerateContentResponse, error) {
 	response, err := client.Models.GenerateContent(
 		ctx,
 		model,
-		content,
+		contents,
 		config,
 	)
 

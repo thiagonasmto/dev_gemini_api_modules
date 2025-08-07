@@ -7,7 +7,8 @@ import (
 	"google.golang.org/genai"
 )
 
-func StreamingRequest(client *genai.Client, ctx context.Context, model string, prompt string, content []*genai.Content, config *genai.GenerateContentConfig) {
+func StreamingRequest(client *genai.Client, ctx context.Context, model string, prompt string, config *genai.GenerateContentConfig) {
+	content := genai.Text(prompt)
 	responseStreaming := client.Models.GenerateContentStream(
 		ctx,
 		model,
