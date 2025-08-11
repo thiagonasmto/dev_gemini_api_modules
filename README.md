@@ -72,7 +72,7 @@ go mod tidy
 
 ## 📖 Exemplos
 
-No diretório [`./services/util_examples/`](./services/util_examples) há códigos prontos para:
+No diretório [`util_examples`](./backend/services/util_examples/) há códigos prontos para:
 
 * Enviar prompts de texto.
 * Processar imagens.
