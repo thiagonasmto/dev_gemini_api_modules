@@ -7,7 +7,6 @@ import (
 )
 
 func SummaryResponse(response *genai.GenerateContentResponse) {
-	// utilexamples.JSONSimpleRequest(response)
 	for _, part := range response.Candidates[0].Content.Parts {
 		if part.Text != "" {
 			if part.Thought {

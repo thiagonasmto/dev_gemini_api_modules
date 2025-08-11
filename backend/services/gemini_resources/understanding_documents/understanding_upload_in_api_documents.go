@@ -7,7 +7,7 @@ import (
 	"google.golang.org/genai"
 )
 
-func UnderstandingLocalDocuments(pdfPaths []string, ctx context.Context, client *genai.Client, prompt string) (contents []*genai.Content) {
+func UnderstandingUploadDocuments(pdfPaths []string, ctx context.Context, client *genai.Client, prompt string) (contents []*genai.Content) {
 	// Exaple pdfPaths
 	// pdfPaths = []string{
 	// 	"/path/to/file1.pdf",
