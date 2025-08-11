@@ -13,7 +13,7 @@ import (
 
 func main() {
 	config.Connect()
-	// ctx, client, model, gemini_config, debugResponse, _ := config.ConfigGemini()
+	ctx, client, model, gemini_config, debugResponse, _ := config.ConfigGemini()
 
 	fmt.Println("Migrando tabelas...")
 	if err := config.DB.AutoMigrate(&models.Client{}); err != nil {
@@ -31,7 +31,7 @@ func main() {
 
 	r := gin.Default()
 
-	routes.UserRoutes(r)
+	routes.UserRoutes(r, ctx, client, model, gemini_config, debugResponse)
 
 	port := os.Getenv("PORT")
 	if port == "" {
