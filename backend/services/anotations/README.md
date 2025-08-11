@@ -131,3 +131,7 @@ O custo é calculado com base na soma de:
 * 📐 Gire as páginas para a orientação correta antes do upload
 * 🔍 Evite imagens desfocadas
 * 📝 Se for enviar apenas **uma página**, coloque o prompt **após ela**
+
+### Para Estudar
+
+* Arquitetura Agent2Agent - A2A (Google)

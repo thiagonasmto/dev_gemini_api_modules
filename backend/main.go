@@ -13,6 +13,7 @@ import (
 
 func main() {
 	config.Connect()
+	// ctx, client, model, gemini_config, debugResponse, _ := config.ConfigGemini()
 
 	fmt.Println("Migrando tabelas...")
 	if err := config.DB.AutoMigrate(&models.Client{}); err != nil {
@@ -24,7 +25,7 @@ func main() {
 	if err := config.DB.AutoMigrate(&models.Chat{}); err != nil {
 		log.Fatalf("erro ao migrar ChatModel: %v", err)
 	}
-	if err := config.DB.AutoMigrate(&models.Mensagem{}); err != nil {
+	if err := config.DB.AutoMigrate(&models.Message{}); err != nil {
 		log.Fatalf("erro ao migrar MenssagemModel: %v", err)
 	}
 
