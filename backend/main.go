@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"geminai_with_go/config"
 	"geminai_with_go/models"
+	"geminai_with_go/routes"
 	"log"
+	"os"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -12,9 +16,25 @@ func main() {
 
 	fmt.Println("Migrando tabelas...")
 	if err := config.DB.AutoMigrate(&models.Client{}); err != nil {
-		log.Fatalf("erro ao migrar UserModel: %v", err)
+		log.Fatalf("erro ao migrar ClientModel: %v", err)
 	}
-	// ctx, client, model, config, debugResponse, _ := config.ConfigGemini()
-	// ctx, client, model, config, _, _ := config.ConfigGemini()
-	// prompt := "Resume this document"
+	if err := config.DB.AutoMigrate(&models.Adm{}); err != nil {
+		log.Fatalf("erro ao migrar AdmModel: %v", err)
+	}
+	if err := config.DB.AutoMigrate(&models.Chat{}); err != nil {
+		log.Fatalf("erro ao migrar ChatModel: %v", err)
+	}
+	if err := config.DB.AutoMigrate(&models.Mensagem{}); err != nil {
+		log.Fatalf("erro ao migrar MenssagemModel: %v", err)
+	}
+
+	r := gin.Default()
+
+	routes.UserRoutes(r)
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	r.Run(":" + port)
 }

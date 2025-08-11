@@ -16,10 +16,11 @@ type User struct {
 }
 
 type Client struct {
-	User        `gorm:"embedded"`
-	CountOrders int `gorm:"default:0" json:"countOrders"`
+	User `gorm:"embedded"`
+	Rule int `gorm:"default:0" json:"rule"`
 }
 
 type Adm struct {
 	User `gorm:"embedded"`
+	Rule int `gorm:"default:1" json:"rule"`
 }
