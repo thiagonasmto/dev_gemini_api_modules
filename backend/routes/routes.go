@@ -32,5 +32,8 @@ func UserRoutes(router *gin.Engine, ctx context.Context, client *genai.Client, m
 		geminiGroup.POST("/", func(c *gin.Context) {
 			controllers.SimpleRequestController(c, ctx, client, model, config, debugResponse)
 		})
+		geminiGroup.POST("/gemini-history", func(c *gin.Context) {
+			controllers.ChatWithHistory(c, ctx, client, model, config)
+		})
 	}
 }

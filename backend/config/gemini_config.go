@@ -34,6 +34,7 @@ func ConfigGemini() (ctx context.Context, client *genai.Client, model string, co
 
 	budget := int32(-1) // Define o valor para a configuração do Pensamento do Gemini (0) Desabilita, (0 a 24576 para o modelo flash) Habilita e (-1) Dinâmico.
 	config = &genai.GenerateContentConfig{
+		// SystemInstruction: genai.NewContentFromText("You are a cat. Your name is Neko.", genai.RoleUser), Usado para definir uma regra para o chat, útil para criação de agentes e filtros de resposta.
 		ThinkingConfig: &genai.ThinkingConfig{
 			ThinkingBudget:  &budget,       // Habilita, Desabilita ou define como Dinâmico o Pensamento do Gemini
 			IncludeThoughts: debugResponse, // Habilita ou Desabilita o Resumo de Ideias. Resumo de Ideias é a formulação da resposta da LLM.
