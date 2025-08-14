@@ -1,28 +1,39 @@
-import { useState } from "react";
-import { sendMessage, type GeminiRequest } from "./services/geminiService";
+import { useState, useRef } from "react";
+import { sendMessage, type GeminiRequestMessage } from "./services/geminiService";
 import TextareaAutosize from "react-textarea-autosize";
 import ReactMarkdown from "react-markdown";
 import "./App.css";
 
 function App() {
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<GeminiRequest[]>([]);
+  const [messages, setMessages] = useState<GeminiRequestMessage[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    setSelectedFile(e.target.files[0]); // só armazena o arquivo, não envia
+    console.log("Arquivo carregado")
+    // e.target.value = "";
+  };
+  
   const handleSend = async () => {
-    if (!message.trim()) return;
+    if (!message && !selectedFile) return;
 
     // Adiciona mensagem do usuário
-    const userMessage: GeminiRequest = {
+    const userMessage: GeminiRequestMessage = {
       role: "user",
       content: message,
+      file: selectedFile || undefined,
     };
+
     setMessages((prev) => [...prev, userMessage]);
 
     try {
       const responseText = await sendMessage(userMessage);
 
-      const assistantMessage: GeminiRequest = {
-        role: "model", // role retornado pelo Gemini
+      const assistantMessage: GeminiRequestMessage = {
+        role: "model",
         content: responseText,
       };
 
@@ -36,16 +47,17 @@ function App() {
     }
 
     setMessage("");
+    setSelectedFile(null); 
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // limpa o valor do input real
+    }
   };
 
   return (
     <div className="container-chat">
       <div className="chat-messages">
         {messages.map((m, i) => (
-          <div
-            key={i}
-            className={`message-bubble ${m.role === "user" ? "user" : "model"}`}
-          >
+          <div key={i} className={`message-bubble ${m.role === "user" ? "user" : "model"}`} >
             <ReactMarkdown>{m.content}</ReactMarkdown>
           </div>
         ))}
@@ -64,7 +76,18 @@ function App() {
             }
           }}
         />
-        <button onClick={handleSend}>Enviar</button>
+
+        <div className="inputs">
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
+
+          <button className="file-input" onClick={() => fileInputRef.current?.click()}>📎</button>
+          {/* <button className="text-input" onClick={handleSend}>Enviar</button> */}
+        </div>
       </div>
     </div>
   );

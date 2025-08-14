@@ -3,21 +3,13 @@ package geminiresources
 import (
 	"context"
 	"fmt"
-	"io"
-	"net/http"
 
 	"google.golang.org/genai"
 )
 
-func UnderstandingInLineDocuments(ctx context.Context, client *genai.Client, model string, config *genai.GenerateContentConfig, prompt string, doc_url string) (*genai.GenerateContentResponse, error) {
-	pdfResp, err := http.Get(doc_url)
-	if err != nil {
-		return nil, fmt.Errorf("erro: falha na requisição para captura do arquivo")
-	}
-	var pdfBytes []byte
-	if pdfResp != nil && pdfResp.Body != nil {
-		pdfBytes, _ = io.ReadAll(pdfResp.Body)
-		pdfResp.Body.Close()
+func UnderstandingInLineDocuments(ctx context.Context, client *genai.Client, model string, config *genai.GenerateContentConfig, prompt string, pdfBytes []byte) (*genai.GenerateContentResponse, error) {
+	if pdfBytes == nil {
+		return nil, fmt.Errorf("erro: nenhum arquivo enviado")
 	}
 
 	parts := []*genai.Part{

@@ -7,9 +7,10 @@ const api = axios.create({
   },
 });
 
-export interface GeminiRequest {
+export interface GeminiRequestMessage {
   role: "user" | "model" | "system";
   content: string;
+  file?: File;
 }
 
 export interface GeminiResponse {
@@ -39,11 +40,26 @@ export interface GeminiResponse {
 }
 
 // Função para enviar mensagem e extrair apenas o texto da resposta
-export async function sendMessage(data: GeminiRequest): Promise<string> {
+export async function sendMessage(data: GeminiRequestMessage): Promise<string> {
   try {
-    const response = await api.post("/", data);
+    let response;
 
-    return response.data.response.candidates[0].content.parts[0].text;
+    if (data.file) {
+      // Se houver arquivo, envia como FormData
+      const formData = new FormData();
+      formData.append("file", data.file);
+      formData.append("prompt", data.content); // content já é o prompt
+
+      response = await api.post("/gemini-understanding-doc", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    } else {
+      // Apenas texto
+      response = await api.post("/", data);
+    }
+
+    // Retorna apenas o texto principal da resposta
+    return response.data.response.candidates?.[0]?.content?.parts?.[0]?.text || "";
   } catch (error) {
     console.error("Erro ao chamar Gemini Service:", error);
     throw error;
