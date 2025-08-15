@@ -10,11 +10,20 @@ function App() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const TypingIndicator = () => {
+    return (
+      <div className="typing-indicator">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    );
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
-    setSelectedFile(e.target.files[0]); // só armazena o arquivo, não envia
+    setSelectedFile(e.target.files[0]);
     console.log("Arquivo carregado")
-    // e.target.value = "";
   };
   
   const handleSend = async () => {
@@ -29,27 +38,33 @@ function App() {
 
     setMessages((prev) => [...prev, userMessage]);
 
+    // Adiciona placeholder de "digitando..."
+    const loadingMessage: GeminiRequestMessage = {
+      role: "model",
+      content: "__TYPING__",
+    };
+    setMessages((prev) => [...prev, loadingMessage]);
+
     try {
       const responseText = await sendMessage(userMessage);
 
-      const assistantMessage: GeminiRequestMessage = {
-        role: "model",
-        content: responseText,
-      };
-
-      // Adiciona resposta do assistente
-      setMessages((prev) => [...prev, assistantMessage]);
+     setMessages((prev) => {
+        const newMessages = [...prev];
+        newMessages.pop();
+        return [...newMessages, { role: "model", content: responseText }];
+      });
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: "model", content: "Erro ao processar requisição" },
-      ]);
+      setMessages((prev) => {
+        const newMessages = [...prev];
+        newMessages.pop();
+        return [...newMessages, { role: "model", content: "Erro ao processar requisição" }];
+      });
     }
 
     setMessage("");
     setSelectedFile(null); 
     if (fileInputRef.current) {
-      fileInputRef.current.value = ""; // limpa o valor do input real
+      fileInputRef.current.value = "";
     }
   };
 
@@ -58,7 +73,7 @@ function App() {
       <div className="chat-messages">
         {messages.map((m, i) => (
           <div key={i} className={`message-bubble ${m.role === "user" ? "user" : "model"}`} >
-            <ReactMarkdown>{m.content}</ReactMarkdown>
+            {m.content === "__TYPING__" ? <TypingIndicator /> : <ReactMarkdown>{m.content}</ReactMarkdown>}
           </div>
         ))}
       </div>
