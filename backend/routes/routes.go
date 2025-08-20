@@ -39,4 +39,9 @@ func UserRoutes(router *gin.Engine, ctx context.Context, client *genai.Client, m
 			controllers.ChatDocumentController(c, ctx, client, model, config)
 		})
 	}
+
+	ollamaGroup := router.Group("/ollama-service")
+	{
+		ollamaGroup.POST("/", controllers.SimpleLocalChat)
+	}
 }

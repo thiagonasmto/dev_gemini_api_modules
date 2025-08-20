@@ -13,7 +13,7 @@ import (
 var DB *gorm.DB
 
 func Connect() {
-	if os.Getenv("ENV") != "production" {
+	if os.Getenv("ENV") != "PROD" {
 		if err := godotenv.Load(); err != nil {
 			log.Println("warning: .env não encontrado, continuando com variáveis de ambiente do sistema.")
 		}
