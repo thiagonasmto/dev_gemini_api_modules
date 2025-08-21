@@ -15,7 +15,8 @@ import (
 
 func main() {
 	config.Connect()
-	ctx, client, model, gemini_config, debugResponse, _ := config.ConfigGemini()
+	ctx_gemini, client_gemini, model, gemini_config, debugResponse, _ := config.GeminiConfig()
+	ctx_ollama, client_ollama, _ := config.OllamaConfig()
 
 	fmt.Println("Migrando tabelas...")
 	if err := config.DB.AutoMigrate(&models.Client{}); err != nil {
@@ -42,7 +43,7 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	routes.UserRoutes(r, ctx, client, model, gemini_config, debugResponse)
+	routes.ApiRoutes(r, ctx_gemini, client_gemini, model, gemini_config, debugResponse, ctx_ollama, client_ollama)
 
 	port := os.Getenv("PORT")
 	if port == "" {

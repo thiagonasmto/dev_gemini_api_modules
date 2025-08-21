@@ -5,10 +5,11 @@ import (
 	"geminai_with_go/controllers"
 
 	"github.com/gin-gonic/gin"
+	"github.com/ollama/ollama/api"
 	"google.golang.org/genai"
 )
 
-func UserRoutes(router *gin.Engine, ctx context.Context, client *genai.Client, model string, config *genai.GenerateContentConfig, debugResponse bool) {
+func ApiRoutes(router *gin.Engine, ctx_gemini context.Context, client *genai.Client, model string, config *genai.GenerateContentConfig, debugResponse bool, ctx_ollama context.Context, client_ollama *api.Client) {
 	clientGroup := router.Group("/clients")
 	{
 		clientGroup.POST("/", controllers.CreateClient)
@@ -30,18 +31,21 @@ func UserRoutes(router *gin.Engine, ctx context.Context, client *genai.Client, m
 	geminiGroup := router.Group("/gemini-service")
 	{
 		geminiGroup.POST("/", func(c *gin.Context) {
-			controllers.SimpleRequestController(c, ctx, client, model, config, debugResponse)
+			controllers.SimpleRequestController(c, ctx_gemini, client, model, config, debugResponse)
 		})
 		geminiGroup.POST("/gemini-history", func(c *gin.Context) {
-			controllers.ChatWithHistory(c, ctx, client, model, config)
+			controllers.ChatWithHistory(c, ctx_gemini, client, model, config)
 		})
 		geminiGroup.POST("/gemini-understanding-doc", func(c *gin.Context) {
-			controllers.ChatDocumentController(c, ctx, client, model, config)
+			controllers.ChatDocumentController(c, ctx_gemini, client, model, config)
 		})
 	}
 
 	ollamaGroup := router.Group("/ollama-service")
 	{
-		ollamaGroup.POST("/", controllers.SimpleLocalChat)
+		ollamaGroup.POST("/", func(ctx *gin.Context) {
+			controllers.SimpleLocalChat(ctx, ctx_ollama, client_ollama)
+		})
+		ollamaGroup.POST("/extracto-pdf", controllers.PdfExtractor)
 	}
 }

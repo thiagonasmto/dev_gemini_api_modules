@@ -9,7 +9,7 @@ import (
 	"google.golang.org/genai"
 )
 
-func ConfigGemini() (ctx context.Context, client *genai.Client, model string, config *genai.GenerateContentConfig, debugResponse bool, erro error) {
+func GeminiConfig() (ctx context.Context, client *genai.Client, model string, config *genai.GenerateContentConfig, debugResponse bool, erro error) {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Erro ao carregar o arquivo .env")

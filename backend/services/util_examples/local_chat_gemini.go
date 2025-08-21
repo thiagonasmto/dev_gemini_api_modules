@@ -7,27 +7,28 @@ import (
 	"github.com/ollama/ollama/api"
 )
 
-func LocalSimpleRequest() {
-	ctx := context.Background()
-	client, err := api.ClientFromEnvironment()
-	if err != nil {
-		panic(err)
-	}
-
+// services/util_examples/local_request.go
+func LocalSimpleRequest(ctx_ollama context.Context, client_ollama *api.Client, prompt string, model string, onChunk func(string)) error {
 	req := &api.GenerateRequest{
-		Model:  "gemma3:1b",
-		Prompt: "Escreva uma história sobre uma mochila mágica.",
+		Model:  model,
+		Prompt: prompt,
 	}
 
-	var fullResponse string
+	respFunc := func(resp api.GenerateResponse) error {
+		// printa no terminal
+		fmt.Print(resp.Response)
 
-	err = client.Generate(ctx, req, func(resp api.GenerateResponse) error {
-		fullResponse += resp.Response // concatena cada parte da resposta
+		// também envia pro callback (controller pode mandar pro cliente)
+		if onChunk != nil {
+			onChunk(resp.Response)
+		}
 		return nil
-	})
-	if err != nil {
-		panic(err)
 	}
 
-	fmt.Println(fullResponse)
+	if err := client_ollama.Generate(ctx_ollama, req, respFunc); err != nil {
+		return err
+	}
+
+	fmt.Println()
+	return nil
 }
