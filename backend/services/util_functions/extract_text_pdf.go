@@ -1,24 +1,21 @@
 package utilfunctions
 
 import (
-	"os"
-	"path/filepath"
-
 	"github.com/ledongthuc/pdf"
 )
 
 func ExtractTextFromPDF(path string) (string, error) {
 	// Descobre o diretório onde o binário está rodando
-	exePath, err := os.Executable()
-	if err != nil {
-		return "", err
-	}
-	baseDir := filepath.Dir(exePath)
+	// exePath, err := os.Executable()
+	// if err != nil {
+	// 	return "", err
+	// }
+	// baseDir := filepath.Dir(exePath)
 
-	// Junta o caminho base com o relativo passado
-	absPath := filepath.Join(baseDir, path)
+	// // Junta o caminho base com o relativo passado
+	// absPath := filepath.Join(baseDir, path)
 
-	f, r, err := pdf.Open(absPath)
+	f, r, err := pdf.Open(path)
 	if err != nil {
 		return "", err
 	}
