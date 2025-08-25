@@ -9,7 +9,7 @@ import (
 	"google.golang.org/genai"
 )
 
-func ApiRoutes(router *gin.Engine, ctx_gemini context.Context, client *genai.Client, model string, config *genai.GenerateContentConfig, debugResponse bool, ctx_ollama context.Context, client_ollama *api.Client) {
+func ApiRoutes(router *gin.Engine, ctx_gemini context.Context, client *genai.Client, model string, config *genai.GenerateContentConfig, debugResponse bool, ctx_ollama context.Context, client_ollama *api.Client, model_embedding string) {
 	clientGroup := router.Group("/clients")
 	{
 		clientGroup.POST("/", controllers.CreateClient)
@@ -46,6 +46,8 @@ func ApiRoutes(router *gin.Engine, ctx_gemini context.Context, client *genai.Cli
 		ollamaGroup.POST("/", func(ctx *gin.Context) {
 			controllers.SimpleLocalChat(ctx, ctx_ollama, client_ollama)
 		})
-		ollamaGroup.POST("/extracto-pdf", controllers.PdfExtractor)
+		ollamaGroup.POST("/extracto-pdf", func(ctx *gin.Context) {
+			controllers.PdfExtractor(ctx, ctx_ollama, client_ollama, model_embedding)
+		})
 	}
 }

@@ -42,4 +42,10 @@ func Connect() {
 
 	DB = db
 	fmt.Println("conexão com banco de dados estabelecida")
+
+	sql := `CREATE EXTENSION IF NOT EXISTS vector;`
+	if err := DB.Exec(sql).Error; err != nil {
+		log.Fatalf("erro ao criar extensão pgvector: %v", err)
+	}
+	fmt.Println("extensão pgvector verificada/instalada")
 }

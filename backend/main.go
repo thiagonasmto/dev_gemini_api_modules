@@ -16,7 +16,7 @@ import (
 func main() {
 	config.Connect()
 	ctx_gemini, client_gemini, model, gemini_config, debugResponse, _ := config.GeminiConfig()
-	ctx_ollama, client_ollama, _ := config.OllamaConfig()
+	ctx_ollama, client_ollama, model_embedding, _ := config.OllamaConfig()
 
 	fmt.Println("Migrando tabelas...")
 	if err := config.DB.AutoMigrate(&models.Client{}); err != nil {
@@ -31,6 +31,9 @@ func main() {
 	if err := config.DB.AutoMigrate(&models.Message{}); err != nil {
 		log.Fatalf("erro ao migrar MenssagemModel: %v", err)
 	}
+	if err := config.DB.AutoMigrate(&models.Document{}); err != nil {
+		log.Fatalf("erro ao migrar Document: %v", err)
+	}
 
 	r := gin.Default()
 
@@ -43,7 +46,7 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	routes.ApiRoutes(r, ctx_gemini, client_gemini, model, gemini_config, debugResponse, ctx_ollama, client_ollama)
+	routes.ApiRoutes(r, ctx_gemini, client_gemini, model, gemini_config, debugResponse, ctx_ollama, client_ollama, model_embedding)
 
 	port := os.Getenv("PORT")
 	if port == "" {
